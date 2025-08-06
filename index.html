@@ -1,111 +1,38 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>官方认证</title>
     <style>
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body, html {
             height: 100%;
-            width: 100%;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        #frame-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            background: #000;
         }
         iframe {
             width: 100%;
             height: 100%;
             border: none;
-            background: #f5f5f5;
-        }
-        #loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-            z-index: 100;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            border-top-color: #09f;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 15px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        #error {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            color: #ff4444;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <div class="spinner"></div>
-        <div>页面加载中...</div>
-    </div>
-
-    <div id="error">
-        <h3>加载失败</h3>
-        <p id="error-message"></p>
-        <button onclick="location.reload()">重新加载</button>
-    </div>
-
-    <div id="frame-container">
-        <!-- 在这里修改你要打开的另一个域名的URL -->
-        <iframe 
-            src="http://kek.9ki.top/display.php" 
-            allow="fullscreen"
-            onload="hideLoader()"
-            onerror="showError('无法加载页面')"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        ></iframe>
-    </div>
-
+    <iframe 
+        src="http://kek.9ki.top/display.php" 
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+        allowfullscreen
+        referrerpolicy="no-referrer"
+    ></iframe>
+    
     <script>
-        function hideLoader() {
-            document.getElementById('loading').style.display = 'none';
-        }
-        
-        function showError(message) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
-            document.getElementById('error-message').textContent = message;
-        }
-        
-        // 防止某些网站检测到被iframe嵌入
-        window.addEventListener('DOMContentLoaded', function() {
-            try {
-                document.title = "官方认证";
-                // 尝试移除iframe的referrer信息（不一定生效）
-                const iframe = document.querySelector('iframe');
-                iframe.setAttribute('referrerpolicy', 'no-referrer');
-            } catch(e) {
-                console.log(e);
-            }
+        // 强制禁止缩放（针对某些Android设备的特殊处理）
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
         });
     </script>
 </body>
