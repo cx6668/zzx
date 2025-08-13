@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>内容展示</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="contentFrame" src="about:blank"></iframe>
+    <div class="loading" id="loading">加载中...</div>
+
+    <script>
+        // 获取URL参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUrl = urlParams.get('url');
+        
+        if(targetUrl) {
+            // 解码URL并设置iframe的src
+            const decodedUrl = decodeURIComponent(targetUrl);
+            
+            // 确保URL有协议头
+            const finalUrl = decodedUrl.startsWith('http') ? decodedUrl : `https://${decodedUrl}`;
+            
+            document.getElementById('contentFrame').src = finalUrl;
+            
+            // 加载完成后隐藏loading
+            document.getElementById('contentFrame').onload = function() {
+                document.getElementById('loading').style.display = 'none';
+            };
+        } else {
+            // 如果没有URL参数，显示错误信息
+            document.getElementById('contentFrame').srcdoc = `
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <style>
+                            body {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                height: 100vh;
+                                margin: 0;
+                                font-family: sans-serif;
+                                color: #666;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>未提供有效的链接参数</h2>
+                    </body>
+                </html>
+            `;
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // 适配微信/QQ内置浏览器
+        function adaptWechatBrowser() {
+            if(navigator.userAgent.match(/MicroMessenger|QQ/i)) {
+                // 在微信/QQ中全屏显示
+                document.documentElement.style.height = '100%';
+                document.body.style.height = '100%';
+                document.getElementById('contentFrame').style.height = '100%';
+                
+                // 防止微信工具栏遮挡
+                setTimeout(function() {
+                    window.scrollTo(0, 1);
+                }, 100);
+            }
+        }
+        
+        adaptWechatBrowser();
+    </script>
+</body>
+</html>
